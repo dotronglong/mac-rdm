@@ -7,13 +7,22 @@
 //
 
 import Cocoa
+import Darwin
 
 class ViewController: NSViewController {
 
+    @IBOutlet weak var btnDownload: NSButton!
+    @IBOutlet weak var textLink: NSTextField!
+    @IBAction func onButtonDownloadClicked(sender: AnyObject) {
+        let randomNum = randomNumber()
+        textLink.stringValue = String(randomNum)
+    }
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
+        textLink.stringValue = "ABCDEF"
+        print(textLink.stringValue)
     }
 
     override var representedObject: AnyObject? {
@@ -22,6 +31,8 @@ class ViewController: NSViewController {
         }
     }
 
-
+    func randomNumber() -> ULONG {
+        return arc4random()
+    }
 }
 
