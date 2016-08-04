@@ -12,17 +12,16 @@ import Darwin
 class ViewController: NSViewController {
 
     @IBOutlet weak var btnDownload: NSButton!
-    @IBOutlet weak var textLink: NSTextField!
-    @IBAction func onButtonDownloadClicked(sender: AnyObject) {
-        let randomNum = randomNumber()
-        textLink.stringValue = String(randomNum)
-    }
+    @IBOutlet weak var txtLink: NSTextField!
+    @IBOutlet weak var txtSavePath: NSTextField!
+    
+    var savePath = ""
+    var fileUrl = ""
+    
     override func viewDidLoad() {
         super.viewDidLoad()
 
         // Do any additional setup after loading the view.
-        textLink.stringValue = "ABCDEF"
-        print(textLink.stringValue)
     }
 
     override var representedObject: AnyObject? {
@@ -33,6 +32,42 @@ class ViewController: NSViewController {
 
     func randomNumber() -> ULONG {
         return arc4random()
+    }
+    
+    @IBAction func onButtonDownloadClicked(sender: AnyObject){
+        fileUrl = txtLink.stringValue
+        let fileContent = downloadFileUrl(fileUrl, savePath: savePath)
+        print(fileContent)
+    }
+    
+    @IBAction func onButtonBrowseClicked(sender: AnyObject) {
+        savePath = openSelectFileWindow()
+        txtSavePath.stringValue = String(savePath)
+    }
+    
+    func openSelectFileWindow() -> String {
+        let selectFilePanel: NSOpenPanel = NSOpenPanel()
+        selectFilePanel.canChooseDirectories = true
+        selectFilePanel.canChooseFiles = false
+        selectFilePanel.runModal()
+        
+        var path = selectFilePanel.URL?.path
+        if path == nil {
+            path = ""
+        }
+        
+        return path!
+    }
+    
+    func downloadFileUrl(fileUrl: String, savePath: String) -> String {
+        var fileContent = ""
+        if let url = NSURL(string: fileUrl) {
+            let fileData = NSData(contentsOfURL: url)
+            let fileContentString = NSString(data: fileData!, encoding: NSUTF8StringEncoding)
+            fileContent = String(fileContentString)
+        }
+        
+        return fileContent
     }
 }
 
